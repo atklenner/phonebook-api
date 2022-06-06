@@ -26,6 +26,10 @@ const persons = [
   { id: 5 },
 ];
 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+
 app.get("/api/persons", (req, res) => {
   res.json(persons);
 });
@@ -35,9 +39,8 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.get("/info", (req, res) => {
-  let string = `Phonebook has info for ${persons.length} people
-  ${Date()}`;
-  res.send(string);
+  let info = { number: persons.length, date: Date() };
+  res.json(info);
 });
 
 app.listen(process.env.PORT || PORT, () => console.log("Running"));

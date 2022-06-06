@@ -23,10 +23,15 @@ const persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
+  { id: 5 },
 ];
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
+});
+
+app.get("/api/persons/:id", (req, res) => {
+  res.json(persons.filter((person) => person.id === +req.params.id));
 });
 
 app.get("/info", (req, res) => {

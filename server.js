@@ -23,8 +23,9 @@ let persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
-  { id: 5 },
 ];
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
@@ -32,6 +33,21 @@ app.get("/", (req, res) => {
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
+});
+
+app.post("/api/persons", (req, res) => {
+  const { name, number } = req.body;
+  let alreadyExists = persons.find((person) => person.name === name);
+  if (alreadyExists) {
+    res.status(400).send({ error: "name must be unique" });
+  } else if (name && number) {
+    let id = Math.floor(Math.random() * 10000 + 1);
+    let newNum = { id, name, number };
+    persons.push(newNum);
+    res.status(201).json(newNum);
+  } else {
+    res.status(400).json({ error: "name or number missing" });
+  }
 });
 
 app.get("/api/persons/:id", (req, res) => {

@@ -29,6 +29,7 @@ let persons = [
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static("build"));
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :post")
 );
@@ -36,10 +37,6 @@ morgan.token("post", (req, res) => {
   if (req.method === "POST") {
     return JSON.stringify(req.body);
   } else return "";
-});
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
 });
 
 app.get("/api/persons", (req, res) => {

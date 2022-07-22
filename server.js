@@ -66,6 +66,19 @@ app.get("/api/persons/:id", (req, res, next) => {
     });
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  const { number } = req.body;
+  Person.findByIdAndUpdate(
+    req.params.id,
+    { number },
+    { new: true, runValidators: true, context: "query" }
+  )
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
+    })
+    .catch((err) => next(err));
+});
+
 app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then((result) => {

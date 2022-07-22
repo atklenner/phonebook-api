@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const url = process.env.MONGODB_URI;
 
 const personSchema = new mongoose.Schema({
-  id: Number,
   name: String,
   number: String,
 });
@@ -16,9 +15,7 @@ mongoose
   .then((result) => {
     if (process.argv.length > 3) {
       console.log("connected");
-
-      const note = new Person({
-        id: Math.floor(Math.random() * 10000 + 1),
+      const person = new Person({
         name: process.argv[2],
         number: process.argv[3],
       });
@@ -27,7 +24,7 @@ mongoose
         `added ${process.argv[2]} number ${process.argv[3]} to phonebook`
       );
 
-      return note.save();
+      return person.save();
     }
   })
   .then(() => {

@@ -26,23 +26,29 @@ app.get("/api/persons", (req, res) => {
 
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
-  let alreadyExists = persons.find((person) => person.name === name);
-  if (alreadyExists) {
-    res.status(400).send({ error: "name must be unique" });
-  } else if (name && number) {
-    let id = Math.floor(Math.random() * 10000 + 1);
-    let newNum = { id, name, number };
-    persons.push(newNum);
-    res.status(201).json(newNum);
+  if (name && number) {
+    const person = new Person({ name, number });
+    person.save().then((newPerson) => {
+      res.json(newPerson);
+    });
   } else {
     res.status(400).json({ error: "name or number missing" });
   }
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  Person.find({ id: req.params.id }).then((person) => {
-    res.json(person);
-  });
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).end();
+    });
 });
 
 app.delete("/api/persons/:id", (req, res) => {

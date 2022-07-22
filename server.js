@@ -3,30 +3,8 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
+const Person = require("./models/people");
 const PORT = process.env.PORT;
-
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
 
 app.use(express.json());
 app.use(cors());
@@ -41,7 +19,9 @@ morgan.token("post", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then((people) => {
+    res.json(people);
+  });
 });
 
 app.post("/api/persons", (req, res) => {
@@ -60,7 +40,9 @@ app.post("/api/persons", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  res.json(persons.filter((person) => person.id === +req.params.id));
+  Person.find({ id: req.params.id }).then((person) => {
+    res.json(person);
+  });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -69,9 +51,11 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
-app.get("/info", (req, res) => {
-  let info = { number: persons.length, date: Date() };
-  res.json(info);
+app.get("/api/info", (req, res) => {
+  Person.count().then((count) => {
+    let info = { number: count, date: Date() };
+    res.json(info);
+  });
 });
 
 app.listen(PORT, () => console.log("Running"));

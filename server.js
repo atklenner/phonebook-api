@@ -52,9 +52,14 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  console.log(persons.filter((person) => person.id !== +req.params.id));
-  persons = persons.filter((person) => person.id !== +req.params.id);
-  res.status(204).end();
+  Person.findByIdAndRemove(req.params.id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).end();
+    });
 });
 
 app.get("/api/info", (req, res) => {
